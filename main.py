@@ -1,5 +1,6 @@
 from selenium import webdriver #Selenium Webdriverをインポートして
 from selenium.webdriver.common.action_chains import ActionChains
+from bs4 import BeautifulSoup
 import time
 import sys
 
@@ -60,6 +61,24 @@ driver.find_element_by_id("btnOK").click()
 driver.find_element_by_css_selector("li img").click()
 html_source = driver.page_source
 
+#Beautifulsoupでhtmlをパース
+soup = BeautifulSoup(html_source, "html.parser")
+#予約状況のテーブル
+resavation_table = soup.find("table")
+#日付
+day_ary = list(map(lambda x: x.string, resavation_table.find_all("strong")))
+
+#key-日付　value-dom要素
+dict = {}
+
+#1900~2100のid属性
+base_id = "td{daynum}{col}_7"
+
+#1900~2100の予約状況を取得
+for day, index in zip(day_ary, range(len(day_ary))):
+    id = base_id.format(daynum=len(day_ary), col=index)
+    temp = resavation_table.find(id=id)
+    dict[day] = temp
 
 
 
