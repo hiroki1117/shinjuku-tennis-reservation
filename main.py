@@ -31,10 +31,37 @@ driver.find_element_by_css_selector(".buttons > input").click()
 #予約申込クリック
 driver.find_element_by_xpath("//a[contains(text(),'予約申込')]").click()
 
-#屋外スポーツ施設洗濯
+#分類-屋外スポーツ施設洗濯
 driver.find_element_by_css_selector("select:nth-child(1) > option:nth-child(2)").click()
 #確定
 driver.find_element_by_css_selector(".left > input:nth-child(4)").click()
+#目的-テニス
+driver.find_element_by_xpath("//select[@name='riyosmk']/option[2]").click()
+#確定
+driver.find_element_by_css_selector(".double-contents:nth-child(1) > .left > input:nth-child(3)").click()
+#施設-落合中央公園
+driver.find_element_by_css_selector("select:nth-child(1) > option:nth-child(3)").click()
+#確定
+driver.find_element_by_css_selector(".inner-block:nth-child(4) input:nth-child(3)").click()
+#部屋-落合中央公園庭球場
+driver.find_element_by_css_selector(".selector > select > option").click()
+#確定
+driver.find_element_by_css_selector(".followed > input:nth-child(2)").click()
+#検索条件-月火水木金
+driver.find_element_by_css_selector(".last > input:nth-child(3)").click()
+driver.find_element_by_css_selector(".last > input:nth-child(5)").click()
+driver.find_element_by_css_selector(".last > input:nth-child(7)").click()
+driver.find_element_by_css_selector(".last > input:nth-child(9)").click()
+driver.find_element_by_css_selector(".last > input:nth-child(11)").click()
+#検索
+driver.find_element_by_id("btnOK").click()
+
+#表示する日付を増やす
+driver.find_element_by_css_selector("li img").click()
+html_source = driver.page_source
+
+
+
 
 
 #ブラウザー終了
