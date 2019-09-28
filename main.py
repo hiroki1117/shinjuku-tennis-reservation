@@ -1,16 +1,16 @@
 from selenium import webdriver #Selenium Webdriverをインポートして
-from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 import time
 import sys
 
-
-driver_path = "/usr/local/bin/" #driverのパス
 shinjuku_url = "https://user.shinjuku-shisetsu-yoyaku.jp/regasu/reserve/gin_menu" #新宿テニス予約ページurl
 usr_id = sys.argv[1] #利用者ID
 password = sys.argv[2] #パスワード
 
-driver = webdriver.Firefox(driver_path)
+options = webdriver.ChromeOptions()
+#options.add_argument('-headless') # ヘッドレスモードを有効にする（次の行をコメントアウトすると画面が表示される）。
+
+driver = webdriver.Chrome(options=options)
 
 #menu画面
 driver.get(shinjuku_url)
@@ -80,7 +80,7 @@ for day, index in zip(day_ary, range(len(day_ary))):
     temp = resavation_table.find(id=id)
     dict[day] = temp
 
-
+print(dict)
 
 
 #ブラウザー終了
