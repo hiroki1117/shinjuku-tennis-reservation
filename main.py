@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import platform
+import teams
 
 SHINJUKU_URL = "https://user.shinjuku-shisetsu-yoyaku.jp/regasu/reserve/gin_menu" #新宿テニス予約ページurl
 
@@ -79,20 +80,30 @@ def scrapingCoatStatus(driver, usr_id, password):
     dict = {}
 
     #1900~2100のid属性
-    base_id = "td{daynum}{col}_7"
+    #base_id = "td{daynum}{col}_7"
+    base_id = "td11{col}_7"
 
     #1900~2100の予約状況を取得
     for day, index in zip(day_ary, range(len(day_ary))):
-        id = base_id.format(daynum=len(day_ary), col=index)
+        id = base_id.format(col=index)
         temp = resavation_table.find(id=id)
         dict[day] = temp
 
     return dict
 
+def parseCoastStatusHtml(coatStatusMap):
+    result = {}
+    for key, value in coatStatusMap.items():
+        if value.string == 'Ｘ':
+            result[key] = '×'
+        else:
+            result[key] = '○'
+    return result
 
 def main(event, context):
     usr_id = os.environ['USR_ID']
     password = os.environ['PASSWORD']
+    teams_url = os.environ['TEAMS']
 
     #実行環境ごとのオプション作成
     (options, exe_path) = createOptionsAndPath()
@@ -105,10 +116,13 @@ def main(event, context):
 
     #コートの予約状況の取得
     dict = scrapingCoatStatus(driver, usr_id, password)
-    
+    statusMap = parseCoastStatusHtml(dict)
+
+    print(statusMap)
+    teams.sendToTeams(statusMap, teams_url)
+
     #ブラウザー終了
     driver.quit()
-    print(dict)
 
     return dict
 
