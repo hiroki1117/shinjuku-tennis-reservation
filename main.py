@@ -3,24 +3,31 @@ from bs4 import BeautifulSoup
 import time
 import sys
 import os
+import platform
 
+def createOptionsAndPath():
+    options = webdriver.ChromeOptions()
+    path = "/usr/local/bin/chromedriver"
+
+    if(platform.system() != 'Darwin'):
+        options.binary_location = "./bin/headless-chromium"
+        options.add_argument('-headless')
+        options.add_argument("--no-sandbox")
+        options.add_argument("--single-process")
+        path = "./bin/chromedriver"
+
+    retun (options, path)
 
 def main(event, context):
     shinjuku_url = "https://user.shinjuku-shisetsu-yoyaku.jp/regasu/reserve/gin_menu" #新宿テニス予約ページurl
-    #usr_id = sys.argv[1] #利用者ID
-    #password = sys.argv[2] #パスワード
 
     usr_id = os.environ['USR_ID']
     password = os.environ['PASSWORD']
 
-    options = webdriver.ChromeOptions()
-    options.binary_location = "./bin/headless-chromium"
-    options.add_argument('-headless')
-    options.add_argument("--no-sandbox")
-    options.add_argument("--single-process")
+    (options, exe_path) = createOptionsAndPath()
 
     driver = webdriver.Chrome(
-        executable_path="./bin/chromedriver",
+        executable_path=exe_path,
         chrome_options=options
     )
 
