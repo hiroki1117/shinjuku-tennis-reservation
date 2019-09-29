@@ -124,7 +124,7 @@ def main(event, context):
     #ブラウザー終了
     driver.quit()
 
-    return dict
+    return statusMap
 
 if __name__ == "__main__":
     main({},{})
