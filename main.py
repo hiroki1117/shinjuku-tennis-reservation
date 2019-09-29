@@ -5,6 +5,8 @@ import sys
 import os
 import platform
 
+SHINJUKU_URL = "https://user.shinjuku-shisetsu-yoyaku.jp/regasu/reserve/gin_menu" #新宿テニス予約ページurl
+
 def createOptionsAndPath():
     options = webdriver.ChromeOptions()
     path = "/usr/local/bin/chromedriver"
@@ -16,25 +18,11 @@ def createOptionsAndPath():
         options.add_argument("--single-process")
         path = "./bin/chromedriver"
 
-    retun (options, path)
+    return (options, path)
 
-def main(event, context):
-    shinjuku_url = "https://user.shinjuku-shisetsu-yoyaku.jp/regasu/reserve/gin_menu" #新宿テニス予約ページurl
-
-    usr_id = os.environ['USR_ID']
-    password = os.environ['PASSWORD']
-
-    (options, exe_path) = createOptionsAndPath()
-
-    driver = webdriver.Chrome(
-        executable_path=exe_path,
-        chrome_options=options
-    )
-
+def scrapingCoatStatus(driver, usr_id, password):
     #menu画面
-    driver.get(shinjuku_url)
-
-    #actions = ActionChains(driver)
+    driver.get(SHINJUKU_URL)
 
     #多機能操作ボタン
     meny_operation_btn = driver.find_element_by_css_selector(".second input:nth-child(2)")
@@ -99,10 +87,30 @@ def main(event, context):
         temp = resavation_table.find(id=id)
         dict[day] = temp
 
-    print(dict)
+    return dict
 
+
+def main(event, context):
+    usr_id = os.environ['USR_ID']
+    password = os.environ['PASSWORD']
+
+    #実行環境ごとのオプション作成
+    (options, exe_path) = createOptionsAndPath()
+
+    #Driver作成
+    driver = webdriver.Chrome(
+        executable_path=exe_path,
+        chrome_options=options
+    )
+
+    #コートの予約状況の取得
+    dict = scrapingCoatStatus(driver, usr_id, password)
     
     #ブラウザー終了
-    #driver.quit()
+    driver.quit()
+    print(dict)
 
     return dict
+
+if __name__ == "__main__":
+    main({},{})
