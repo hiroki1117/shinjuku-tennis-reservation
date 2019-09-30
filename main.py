@@ -1,4 +1,5 @@
 from selenium import webdriver #Selenium Webdriverをインポートして
+from selenium.webdriver.support.select import Select
 from bs4 import BeautifulSoup
 import time
 import sys
@@ -21,7 +22,7 @@ def createOptionsAndPath():
 
     return (options, path)
 
-def scrapingCoatStatus(driver, usr_id, password):
+def scrapingOperation(driver, usr_id, password):
     #menu画面
     driver.get(SHINJUKU_URL)
 
@@ -69,8 +70,23 @@ def scrapingCoatStatus(driver, usr_id, password):
     driver.find_element_by_css_selector("li img").click()
     html_source = driver.page_source
 
+    result = parseCoatStatusTable(html_source)
+
+    #もう1月選択できる場合
+    month_options = Select(driver.find_element_by_id("MM")).options
+    if len(month_options) >= 2:
+        #次の月を選択
+        month_options[1].click()
+        #検索
+        driver.find_element_by_xpath("//img[@alt='検索']").click()
+        html_source2 = driver.page_source
+        result.update(parseCoatStatusTable(html_source2))
+
+    return result
+
+def parseCoatStatusTable(html):
     #Beautifulsoupでhtmlをパース
-    soup = BeautifulSoup(html_source, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")
     #予約状況のテーブル
     resavation_table = soup.find("table")
     #日付
@@ -90,6 +106,7 @@ def scrapingCoatStatus(driver, usr_id, password):
         dict[day] = temp
 
     return dict
+
 
 def parseCoastStatusHtml(coatStatusMap):
     result = {}
@@ -115,7 +132,7 @@ def main(event, context):
     )
 
     #コートの予約状況の取得
-    dict = scrapingCoatStatus(driver, usr_id, password)
+    dict = scrapingOperation(driver, usr_id, password)
     statusMap = parseCoastStatusHtml(dict)
 
     print(statusMap)
