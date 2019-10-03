@@ -9,7 +9,7 @@ def sendToTeams(data, url):
         message += key + " " + value + '</br>'
         
     if message == "":
-        message = "<strong>空いている日がないです<strong>"
+        return
 
     myTeamsMessage.title("テニスコート状況")
     myTeamsMessage.text(message)
