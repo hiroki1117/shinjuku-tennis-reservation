@@ -14,11 +14,11 @@ def createOptionsAndPath():
     path = "/usr/local/bin/chromedriver"
 
     if(platform.system() != 'Darwin'):
-        options.binary_location = "./bin/headless-chromium"
+        options.binary_location = "/opt/bin/headless-chromium"
         options.add_argument('-headless')
         options.add_argument("--no-sandbox")
         options.add_argument("--single-process")
-        path = "./bin/chromedriver"
+        path = "/opt/bin/chromedriver"
 
     return (options, path)
 
